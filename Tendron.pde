@@ -1,16 +1,42 @@
+private double fractionLength = .8;
+private int smallestBranch = 10;
+private double branchAngle = .2;
 public void setup()
 {
-  size(500, 500);  
-  background(255);
-  noLoop();
+size(640,480);
+noLoop();
 }
-
 public void draw()
 {
-  background(255);
-  Cluster c = new Cluster(50, 250, 250); // initial number of segments in the tendril and starting (x,y) coordinate
+background(0);
+stroke((int)(Math.random()*256),(int)(Math.random()*256),(int)(Math.random()*256));
+line(320,480,320,380);
+drawBranches(320,380,100,3*Math.PI/2);
 }
-public void mousePressed()
+
+public void drawBranches(int x,int y, double branchLength, double angle)
 {
-  redraw();
+double angle1 = angle + branchAngle;
+double angle2 = angle - branchAngle;
+branchLength*=fractionLength;
+int endX1 = (int)(branchLength*Math.cos(angle1) + x);
+int endY1 = (int)(branchLength*Math.sin(angle1) + y);
+int endX2 = (int)(branchLength*Math.cos(angle2) + x);
+int endY2 = (int)(branchLength*Math.sin(angle2) + y);
+line(x,y,endX1,endY1);
+line(x,y,endX2,endY2);
+if(branchLength > smallestBranch){
+drawBranches(endX1,endY1,branchLength,angle1);
+drawBranches(endX2,endY2,branchLength,angle2);
+}
+}
+
+public void keyPressed(){
+if(key == 'a' && branchAngle <= 0.9){
+branchAngle = branchAngle + 0.005;
+}
+else if(key == 'd' && branchAngle >= 0.1){
+branchAngle = branchAngle - 0.005;
+}
+redraw();
 }
